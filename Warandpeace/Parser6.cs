@@ -10,111 +10,67 @@ namespace Warandpeace
 {
     class Parser6
     {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        public string GetMostCommonWord(string text)
-        {
-            var hz = text.AsSpan();
-            var dictionary = new Dictionary<string, int>();
-            var breakCharacters = new[] { ',', ' ', '.', ':', ';', '-', '\r', '\n' };
-            var indexOfBreakChar = 0;
-            while (hz.Length > 1 && indexOfBreakChar != -1)
-            {
-                indexOfBreakChar = hz.IndexOfAny(breakCharacters);
-                if (indexOfBreakChar > 0)
-                {
-                    var currentWordChars = hz.Slice(0, indexOfBreakChar);
-
-                    var currentWord = MakeWord(currentWordChars);
-
-                    if (dictionary.ContainsKey(currentWord))
-                    {
-                        dictionary[currentWord]++;
-                    }
-                    else
-                    {
-                        dictionary.Add(currentWord, 1);
-                    }
-
-                    //if (dictionary[currentWord] > maxLength)
-                    //{
-                    //    longestWord = currentWord;
-                    //    maxLength = dictionary[currentWord];
-                    //}
-
-                    hz = hz.Slice(indexOfBreakChar + 1);
-                }
-                else
-                {
-                    hz = hz.Slice(1);
-                }
-            }
-
-            //return dictionary.OrderByDescending(x => x.Value).First().Key;
-            return dictionary.First().Key;
-        }
-
-
-
         public string GetMostCommonWord2(string text)
         {
-            var hz = text.AsSpan();
-            var dictionary = new Dictionary<string, int>();
+            var textAsSpan = text.ToLowerInvariant().AsSpan();
+            var dictionary = new Dictionary<string, int>(50000);
             var indexOfBreakChar = 0;
             var stringBuilder = new StringBuilder();
-            while (hz.Length > 1 && indexOfBreakChar != -1)
+            var currentBiggestLength = 0;
+            var mostCommonWord = string.Empty;
+            while (textAsSpan.Length > 1 && indexOfBreakChar != -1)
             {
-                if (hz[0] == ' ')
+                if (textAsSpan[0] == ' ')
                 {
-                    hz = hz.Slice(1);
+                    textAsSpan = textAsSpan.Slice(1);
                     continue;
                 }
 
-                if (hz[0] == ',')
+                if (textAsSpan[0] == ',')
                 {
-                    hz = hz.Slice(1);
+                    textAsSpan = textAsSpan.Slice(1);
                     continue;
                 }
                 
-                if (hz[0] == '.')
+                if (textAsSpan[0] == '.')
                 {
-                    hz = hz.Slice(1);
+                    textAsSpan = textAsSpan.Slice(1);
                     continue;
                 }
 
-                if (hz[0] == ':')
+                if (textAsSpan[0] == ':')
                 {
-                    hz = hz.Slice(1);
+                    textAsSpan = textAsSpan.Slice(1);
                     continue;
                 }
 
-                if (hz[0] == ';')
+                if (textAsSpan[0] == ';')
                 {
-                    hz = hz.Slice(1);
+                    textAsSpan = textAsSpan.Slice(1);
                     continue;
                 }
 
-                if (hz[0] == ',')
+                if (textAsSpan[0] == ',')
                 {
-                    hz = hz.Slice(1);
+                    textAsSpan = textAsSpan.Slice(1);
                     continue;
                 }
 
-                if (hz[0] == '-')
+                if (textAsSpan[0] == '-')
                 {
-                    hz = hz.Slice(1);
+                    textAsSpan = textAsSpan.Slice(1);
                     continue;
                 }
 
-                if (hz[0] == '\r')
+                if (textAsSpan[0] == '\r')
                 {
-                    hz = hz.Slice(1);
+                    textAsSpan = textAsSpan.Slice(1);
                     continue;
                 }
 
-                if (hz[0] == '\n')
+                if (textAsSpan[0] == '\n')
                 {
-                    hz = hz.Slice(1);
+                    textAsSpan = textAsSpan.Slice(1);
                     continue;
                 }
 
@@ -124,83 +80,81 @@ namespace Warandpeace
                 {
                     if (indexOfBreakChar == 0)
                     {
-                        stringBuilder.Append(char.ToLowerInvariant(hz[indexOfBreakChar]));
+                        stringBuilder.Append(textAsSpan[indexOfBreakChar]);
                         indexOfBreakChar++;
                         continue;
                     }
 
-                    if (hz[indexOfBreakChar] == ' ')
+                    if (textAsSpan[indexOfBreakChar] == ' ')
                     {
                         break;
                     }
 
-                    if (hz[indexOfBreakChar] == ',')
+                    if (textAsSpan[indexOfBreakChar] == ',')
                     {
                         break;
                     }
 
-                    if (hz[indexOfBreakChar] == '.')
+                    if (textAsSpan[indexOfBreakChar] == '.')
                     {
                         break;
                     }
 
-                    if (hz[indexOfBreakChar] == ':')
+                    if (textAsSpan[indexOfBreakChar] == ':')
                     {
                         break;
                     }
 
-                    if (hz[indexOfBreakChar] == ';')
+                    if (textAsSpan[indexOfBreakChar] == ';')
                     {
                         break;
                     }
 
-                    if (hz[indexOfBreakChar] == ',')
+                    if (textAsSpan[indexOfBreakChar] == ',')
                     {
                         break;
                     }
 
-                    if (hz[indexOfBreakChar] == '-')
+                    if (textAsSpan[indexOfBreakChar] == '-')
                     {
                         break;
                     }
 
-                    if (hz[indexOfBreakChar] == '\r')
+                    if (textAsSpan[indexOfBreakChar] == '\r')
                     {
                         break;
                     }
 
-                    if (hz[indexOfBreakChar] == '\n')
+                    if (textAsSpan[indexOfBreakChar] == '\n')
                     {
                         break;
                     }
 
-                    stringBuilder.Append(char.ToLowerInvariant(hz[indexOfBreakChar]));
+                    stringBuilder.Append(textAsSpan[indexOfBreakChar]);
                     indexOfBreakChar++;
                 }
 
                 var currentWord = stringBuilder.ToString();
-                if (dictionary.ContainsKey(currentWord))
+                if (dictionary.TryGetValue(currentWord, out int length))
                 {
-                    dictionary[currentWord]++;
+                    length++;
+                    if (length > currentBiggestLength)
+                    {
+                        currentBiggestLength = length;
+                        mostCommonWord = currentWord;
+                    }
+
+                    dictionary[currentWord] = length;
                 }
                 else
                 {
                     dictionary.Add(currentWord, 1);
                 }
 
-                hz = hz.Slice(indexOfBreakChar + 1);
+                textAsSpan = textAsSpan.Slice(indexOfBreakChar + 1);
             }
 
-            return dictionary.OrderByDescending(x => x.Value).First().Key;
-        }
-
-
-
-        string MakeWord(ReadOnlySpan<char> wordChars)
-        {
-            stringBuilder.Clear();
-            stringBuilder.Append(wordChars);
-            return stringBuilder.ToString();
+            return mostCommonWord;
         }
     }
 }

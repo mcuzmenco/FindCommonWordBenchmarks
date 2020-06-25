@@ -45,39 +45,24 @@ namespace Warandpeace
             parser.GetMostCommonWord(text);
         }
 
-        //[Benchmark]
-        //public void LinqGroupBy()
-        //{
-        //    var word = text.Split(',', ' ', '.', ':', ';', '-', '\r', '\n')
-        //        .Where(x => !string.IsNullOrEmpty(x))
-        //        .GroupBy(x => x.ToLower(CultureInfo.CurrentCulture))
-        //        .OrderByDescending(x => x.Count())
-        //        .First();
-        //}
-
         [Benchmark]
-        public void Optimised()
+        public void CachingLongestWord()
         {
             var parser = new Parser2();
             parser.GetMostCommonWord(text);
         }
 
-        //[Benchmark]
-        //public void OptimisedV2()
-        //{
-        //    var parser = new Parser3();
-        //    parser.GetMostCommonWord(text);
-        //}
-
-        //[Benchmark]
-        //public void OptimisedV3()
-        //{
-        //    var parser = new Parser4();
-        //    parser.GetMostCommonWord(text);
-        //}
+        [Benchmark]
+        public void LinqGroupBy()
+        {
+            var word = text.ToLowerInvariant().Split(new[] {',', ' ', '.', ':', ';', '-', '\r', '\n'}, StringSplitOptions.RemoveEmptyEntries)
+                .GroupBy(x => x)
+                .OrderByDescending(x => x.Count())
+                .First();
+        }
 
         [Benchmark]
-        public void OptimisedV4()
+        public void Spans_And_StringBuilder()
         {
             var parser = new Parser6();
             parser.GetMostCommonWord2(text);
