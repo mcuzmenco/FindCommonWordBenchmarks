@@ -18,7 +18,7 @@ namespace Warandpeace
         //    var parser = new Parser6();
         //    for (int i = 0; i < 1000; i++)
         //    {
-        //        parser.GetMostCommonWord2(text);
+        //        parser.GetMostCommonWord(text);
         //    }
 
         //    Console.ReadKey();
@@ -65,7 +65,7 @@ namespace Warandpeace
         public void Spans_And_StringBuilder()
         {
             var parser = new Parser6();
-            parser.GetMostCommonWord2(text);
+            parser.GetMostCommonWord(text);
         }
     }
 }

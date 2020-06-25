@@ -10,7 +10,7 @@ namespace Warandpeace
 {
     class Parser6
     {
-        public string GetMostCommonWord2(string text)
+        public string GetMostCommonWord(string text)
         {
             var textAsSpan = text.ToLowerInvariant().AsSpan();
             var dictionary = new Dictionary<string, int>(50000);
